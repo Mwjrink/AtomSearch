@@ -1,0 +1,27 @@
+{
+  "mode": "GoogleSearch",
+  "image": "google.png",
+  "commandFormat": "@arguments \"? @command\"",
+  "filePath": "\"C:/Program Files (x86)/Google/Chrome/Application/chrome.exe\"",
+  "requiresSelectedResult": false,
+  "UseCustomResultSet": true,
+  "resultsHTTPRequestFormat": "http://google.com/complete/search?client=chrome&q=@command",
+  "nonAlphaNumericCharacterEncodingFormat": "%@unicode",
+  "resultsArrayIndex": 1,
+  "command": "g",
+  "flags": [
+    {
+      "commandFlag": "i",
+      "image": "\"/Resources/incog.png\"",
+      "argument": "--incognito"
+    },
+    {
+      "commandFlag": "n",
+      "argument": "--new-window"
+    },
+    {
+      "commandFlag": "u",
+      "commandFormat": "@arguments \"@command\""
+    }
+  ]
+}

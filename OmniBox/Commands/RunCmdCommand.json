@@ -1,0 +1,13 @@
+{
+  "command": ">",
+  "image": "run.png",
+  "commandFormat": "/c @command",
+  "filePath": "cmd",
+  "mode": "Run",
+  "flags": [
+    {
+      "commandFlag": "a",
+      "commandFormat": "\"C:/Windows/System32/cmd.exe\" \"runas /user:Administrator @command\""
+    }
+  ]
+}

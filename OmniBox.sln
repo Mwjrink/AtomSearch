@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmniBox", "OmniBox\OmniBox.csproj", "{84448D20-E0CB-4D06-9E62-A615561BA13D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OmniBoxSetup", "OmniBoxSetup\OmniBoxSetup.vdproj", "{54D4A1DC-72CA-4A60-BA95-BE407BD3C7BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84448D20-E0CB-4D06-9E62-A615561BA13D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84448D20-E0CB-4D06-9E62-A615561BA13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84448D20-E0CB-4D06-9E62-A615561BA13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84448D20-E0CB-4D06-9E62-A615561BA13D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54D4A1DC-72CA-4A60-BA95-BE407BD3C7BC}.Debug|Any CPU.ActiveCfg = Debug
+		{54D4A1DC-72CA-4A60-BA95-BE407BD3C7BC}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35A55F86-F53A-4376-B485-82904BC5BB5B}
+	EndGlobalSection
+EndGlobal
