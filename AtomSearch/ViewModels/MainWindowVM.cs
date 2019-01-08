@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -9,7 +10,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Newtonsoft.Json;
 
 namespace AtomSearch
 {
@@ -193,7 +193,7 @@ namespace AtomSearch
             commands = JsonHelper.Parse(Directory.GetFiles(commandsDirectory, "*.json", SearchOption.AllDirectories)).ToDictionary(x => x.command, x => x);
 
             commands.Add(SettingsHelper.superSearchPrefix, new Command()
-            { command = SettingsHelper.superSearchPrefix, mode = "SuperSearch", image = "atom.png", description = "Super search" });
+            { command = SettingsHelper.superSearchPrefix, mode = "SuperSearch", image = "atom.png", description = "Super search", _CustomResultsAction = GetSuperSearchResults });
 
             //TODO should this be in a static constructor?
             commands.Add(SettingsHelper.settingsPrefix, new Command()
@@ -259,6 +259,18 @@ namespace AtomSearch
         //TODO use google http request array of relevance and the verbatim relevance score to get a 
         // percentage then use that to sort that result in with the rest of the results
 
+        private IEnumerable<Result> GetSuperSearchResults(string provided)
+        {
+            var resultList = new List<Result>();
+            foreach (var command in commands.Where(c => c.Key != currentCommand.command))
+            {
+                resultList.AddRange(command.Value.GetResults(provided));
+                Debug.Print(command.Key + " done;");
+            }
+
+            return resultList.OrderByDescending(result => result.MatchRank);
+        }
+
         private void GetResults()
         {
             var computed = currentCommand.GetResults(AtomSearchContent);
@@ -306,8 +318,8 @@ namespace AtomSearch
             }
         }
 
-        public Result? GetSelectedResult()
-            => (SelectedIndex > -1) ? (Result?)Results[SelectedIndex] : null;
+        public Result GetSelectedResult()
+            => (SelectedIndex > -1) ? Results[SelectedIndex] : null;
 
         //TODO use current mode
         //TODO check selected required and make use of selected
@@ -321,7 +333,7 @@ namespace AtomSearch
         //         use selection
         //     else
         //         use construct
-        private bool ExecuteCommand(Result? selected = null)
+        private bool ExecuteCommand(Result selected = null)
         {
             if (AtomSearchContent.StartsWith(SettingsHelper.fileSearchPrefix))
             {
@@ -369,11 +381,11 @@ namespace AtomSearch
                         break;
 
                     case "Restart":
-                    {
-                        //System.Diagnostics.Process.Start(Application.ExecutablePath);
-                        //RequestClose()
-                    }
-                    break;
+                        {
+                            //System.Diagnostics.Process.Start(Application.ExecutablePath);
+                            //RequestClose()
+                        }
+                        break;
                 }
             }
             else if (AtomSearchContent.StartsWith(SettingsHelper.appsPrefix))
@@ -389,19 +401,19 @@ namespace AtomSearch
                     if (selected == null)
                         selected = Results.FirstOrDefault();
 
-//#if DEBUG
-//                    var error =
-//#endif
+                    //#if DEBUG
+                    //                    var error =
+                    //#endif
                     Process.Start(new ProcessStartInfo()
                     {
                         WindowStyle = ProcessWindowStyle.Hidden,
-                        FileName = selected.Value.path
+                        FileName = selected.ExecutionText
                         //Arguments = AtomSearchContent.Remove(0, selected.ResultText.Length)
-//#if DEBUG
-//                    ,
-//                        RedirectStandardOutput = true,
-//                        UseShellExecute = false
-//#endif
+                        //#if DEBUG
+                        //                    ,
+                        //                        RedirectStandardOutput = true,
+                        //                        UseShellExecute = false
+                        //#endif
                     })
                     //#if DEBUG
                     //                    .StandardOutput.ReadToEnd()
@@ -427,25 +439,25 @@ namespace AtomSearch
                 (var filePath, var arguments) = command.GetCommand(selected, AtomSearchContent);
 
                 //DbHelper.RecordCommandUse(command, overrideContent ?? AtomSearchContent, AtomSearchContent);
-//#if DEBUG
-//                var error =
-//#endif
-                    Process.Start(new ProcessStartInfo()
-                    {
-                        WindowStyle = ProcessWindowStyle.Normal,
-                        FileName = filePath,
-                        Arguments = arguments
+                //#if DEBUG
+                //                var error =
+                //#endif
+                Process.Start(new ProcessStartInfo()
+                {
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    FileName = filePath,
+                    Arguments = arguments
 
-//#if DEBUG
-//                    ,
-//                        RedirectStandardOutput = true,
-//                        UseShellExecute = false
-//#endif
-                    })
                     //#if DEBUG
-                    //                    .StandardOutput.ReadToEnd()
+                    //                    ,
+                    //                        RedirectStandardOutput = true,
+                    //                        UseShellExecute = false
                     //#endif
-                    ;
+                })
+                //#if DEBUG
+                //                    .StandardOutput.ReadToEnd()
+                //#endif
+                ;
                 //#if DEBUG
                 //                Debug.Print("Command execute output: " + error);
                 //#endif

@@ -26,7 +26,8 @@ namespace AtomSearch
         public string resultsHTTPRequestFormat;
         public string resultsProcessInvokeFileName;
 
-        public int resultsArrayIndex;
+        public string resultsArrayRegex;
+        public string resultsScoreArrayRegex;
 
         public Flag[] flags;
 

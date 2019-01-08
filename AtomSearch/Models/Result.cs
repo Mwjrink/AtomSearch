@@ -10,26 +10,28 @@ using System.Windows.Media;
 
 namespace AtomSearch
 {
-    public struct Result
+    public class Result
     {
         #region Properties
 
         public object IconSource { get; }
 
-        public string ResultText { get; }
+        public string DisplayText { get; }
 
         public string Descriptor { get; }
 
-        public string path { get; }
+        public string ExecutionText { get; }
+
+        public int MatchRank { get; private set; }
 
         #endregion Properties
 
         #region Constructors
 
-        public Result(string resultText, string iconPath, string path = null, string descriptor = null)
+        public Result(string resultText, string iconPath, string executionText = null, string descriptor = null, int matchRank = int.MaxValue)
         {
-            ResultText = resultText;
-            this.path = path;
+            DisplayText = resultText;
+            this.ExecutionText = executionText;
 
             IconSource = Path.Combine(
 #if DEBUG
@@ -38,12 +40,13 @@ namespace AtomSearch
                     "Resources", iconPath);
             
             this.Descriptor = descriptor;
+            this.MatchRank = matchRank;
         }
 
-        public Result(string resultText, Icon icon, string path = null, string descriptor = null)
+        public Result(string resultText, Icon icon, string executionText = null, string descriptor = null, int matchRank = int.MaxValue)
         {
-            ResultText = resultText;
-            this.path = path;
+            DisplayText = resultText;
+            this.ExecutionText = executionText;
 
             IconSource = Imaging.CreateBitmapSourceFromHIcon(
                         icon.Handle,
@@ -51,7 +54,11 @@ namespace AtomSearch
                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
             
             this.Descriptor = descriptor;
+            this.MatchRank = matchRank;
         }
+
+        public void SetMatchRank(int matchRank) 
+            => MatchRank = matchRank;
 
         #endregion Constructors
     }

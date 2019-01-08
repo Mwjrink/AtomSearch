@@ -7,7 +7,8 @@
   "UseCustomResultSet": true,
   "resultsHTTPRequestFormat": "http://google.com/complete/search?client=chrome&q=@command",
   "nonAlphaNumericCharacterEncodingFormat": "%@unicode",
-  "resultsArrayIndex": 1,
+  "resultsArrayRegex": "[((\"[A-z\s]+\"),)+]",
+  "resultsScoreArrayRegex": "[((\"[0-9]+\"),)+]",
   "command": "g",
   "flags": [
     {

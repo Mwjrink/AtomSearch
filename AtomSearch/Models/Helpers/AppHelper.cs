@@ -43,7 +43,10 @@ namespace AtomSearch
 
         public static IEnumerable<Result> GetResults(string provided)
         {
-            return InstalledApps.OrderBy(x => StringDifferenceHelper.LevenshteinDistance(x.ResultText, provided));
+            foreach (var installed in InstalledApps)
+                installed.SetMatchRank(1300 - 1300*(StringDifferenceHelper.LevenshteinDistance(installed.DisplayText, provided) / installed.DisplayText.Length));
+
+            return InstalledApps.OrderBy(x => x.MatchRank);
         }
 
         //TEMPORARY

@@ -36,7 +36,7 @@ namespace AtomSearch
 
         // if * is the json command it will be matched if none of the other flags do, error if more than one * is detected
         // validateCommandJson "@path" to validate your JSon command, (no double asterisks, no double commands ("i " specifiec twice) etc.)
-        public static (string filePath, string arguments) GetCommand(this Command command, Result? selected, string provided)
+        public static (string filePath, string arguments) GetCommand(this Command command, Result selected, string provided)
         {
             EnsureFlagsDict(command);
 
@@ -50,7 +50,7 @@ namespace AtomSearch
                 flag.GetCommand(ref provided, ref constructed, ref arguments);
 
             constructed = constructed.Replace(ARGUMENTS_PARAMETER_NAME, arguments);
-            constructed = constructed.Replace(COMMAND_PARAMETER_NAME, selected.HasValue ? selected.Value.path : provided);
+            constructed = constructed.Replace(COMMAND_PARAMETER_NAME, selected?.ExecutionText ?? provided);
 
             return (command.filePath, constructed);
         }
@@ -107,6 +107,12 @@ namespace AtomSearch
                 var httpResult = HttpHelper.RequestString(command.resultsHTTPRequestFormat.Replace(COMMAND_PARAMETER_NAME, provided));
 
                 var obj = JsonConvert.DeserializeObject<object[]>(httpResult);
+
+                var resultsScoreArray = (JContainer)obj[command.resultsScoreArrayIndex];
+
+                var relevances = resultsScoreArray.First.Next.Value<int[]>();
+
+                var normalization = resultsScoreArray.Last.Value<int>();
 
                 var resultsArray = (JArray)obj[command.resultsArrayIndex];
 

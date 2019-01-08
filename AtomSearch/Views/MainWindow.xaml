@@ -1,4 +1,4 @@
-﻿<Window x:Class="OAtomSearchMainWindow"
+﻿<Window x:Class="AtomSearch.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -320,7 +320,7 @@
                                    Height="32"/>
 
                             <TextBlock Grid.Column="1" Grid.Row="0"
-                                       Text="{Binding ResultText}"
+                                       Text="{Binding DisplayText}"
                                        Foreground="{Binding Context.ResultsForegroundBrush, Source={StaticResource MainWindowVM}}"
                                        FontSize="{Binding Context.ResultsFontSize, Source={StaticResource MainWindowVM}}"
                                        VerticalAlignment="Center" />
