@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AtomSearch.Models.Helpers
+namespace AtomSearch
 {
     public static class FileSystemSearchHelper
     {

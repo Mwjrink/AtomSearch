@@ -7,8 +7,9 @@
   "UseCustomResultSet": true,
   "resultsHTTPRequestFormat": "http://google.com/complete/search?client=chrome&q=@command",
   "nonAlphaNumericCharacterEncodingFormat": "%@unicode",
-  "resultsArrayRegex": "[((\"[A-z\s]+\"),)+]",
-  "resultsScoreArrayRegex": "[((\"[0-9]+\"),)+]",
+  "resultsArrayRegex": "\\[(?<arr>(\"[^,\\]\\r\\n]+\",{0,1})+)\\]",
+  "resultsScoreArrayRegex": "\"google:suggestrelevance\":\\[(?<arr>[0-9,]+)\\]",
+  "resultNormalizationRegex": "\"google:verbatimrelevance\":(?<norm>[0-9]+)",
   "command": "g",
   "flags": [
     {

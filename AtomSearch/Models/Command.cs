@@ -28,6 +28,7 @@ namespace AtomSearch
 
         public string resultsArrayRegex;
         public string resultsScoreArrayRegex;
+        public string resultNormalizationRegex;
 
         public Flag[] flags;
 

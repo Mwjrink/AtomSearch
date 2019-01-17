@@ -22,13 +22,19 @@ namespace AtomSearch
 
         public string ExecutionText { get; }
 
-        public int MatchRank { get; private set; }
+        public double MatchRank => MatchRankStringDifference + MatchRankReOcurrance;
+
+        public double MatchRankStringDifference { get; set; }
+
+        public double MatchRankReOcurrance { get; set; }
+
+        //5000, 4000 is string difference, 1000 is number of occurences
 
         #endregion Properties
 
         #region Constructors
 
-        public Result(string resultText, string iconPath, string executionText = null, string descriptor = null, int matchRank = int.MaxValue)
+        public Result(string resultText, string iconPath, string executionText = null, string descriptor = null, double matchRank = double.MaxValue, double normalization = 4000)
         {
             DisplayText = resultText;
             this.ExecutionText = executionText;
@@ -40,10 +46,10 @@ namespace AtomSearch
                     "Resources", iconPath);
             
             this.Descriptor = descriptor;
-            this.MatchRank = matchRank;
+            this.MatchRankStringDifference = (double)4000 - matchRank / normalization * (double)4000;
         }
 
-        public Result(string resultText, Icon icon, string executionText = null, string descriptor = null, int matchRank = int.MaxValue)
+        public Result(string resultText, Icon icon, string executionText = null, string descriptor = null, double matchRank = double.MaxValue, double normalization = 4000)
         {
             DisplayText = resultText;
             this.ExecutionText = executionText;
@@ -54,11 +60,8 @@ namespace AtomSearch
                         System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
             
             this.Descriptor = descriptor;
-            this.MatchRank = matchRank;
+            this.MatchRankStringDifference = (double)4000 - matchRank / normalization * (double)4000;
         }
-
-        public void SetMatchRank(int matchRank) 
-            => MatchRank = matchRank;
 
         #endregion Constructors
     }

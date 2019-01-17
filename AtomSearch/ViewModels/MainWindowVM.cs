@@ -263,20 +263,29 @@ namespace AtomSearch
         {
             var resultList = new List<Result>();
             foreach (var command in commands.Where(c => c.Key != currentCommand.command))
-            {
                 resultList.AddRange(command.Value.GetResults(provided));
-                Debug.Print(command.Key + " done;");
-            }
 
-            return resultList.OrderByDescending(result => result.MatchRank);
+            var ret = resultList.OrderByDescending(result => result.MatchRank);
+
+            foreach (var command in ret)
+                Debug.Print(command.DisplayText + " " + command.MatchRank);
+
+            return ret;
         }
 
         private void GetResults()
         {
             var computed = currentCommand.GetResults(AtomSearchContent);
             Results.Clear();
+
+            foreach(var row in DbHelper.GetCommandUsages("SELECT * FROM main WHERE CommandText").Enumerate())
+            {
+
+            }
+                
             foreach (var res in computed)
                 Results.Add(res);
+
             RequestChangeResultsVisibility(Results.Any());
         }
 

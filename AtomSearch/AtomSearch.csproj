@@ -86,6 +86,7 @@
     <Compile Include="Models\SQLiteConnectionPool.cs" />
     <Compile Include="Models\Helpers\StringDifferenceHelper.cs" />
     <Compile Include="Models\StrongReferencedSQLiteConnectionPool.cs" />
+    <Compile Include="Models\Wrappers\DataReaderWrapper.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

@@ -15,6 +15,7 @@ namespace AtomSearch
         public static string runPrefix = ">";
         public static string superSearchPrefix = "~";
         public static string appIndexLocation = "C:/ProgramData/Microsoft/Windows/Start Menu/Programs";
+        public static string DbPath = "C:/ProgramData/Microsoft/Windows/Start Menu/Programs";
 
         public static int animationFrameRate = 60;
 
@@ -67,7 +68,11 @@ namespace AtomSearch
                     case "appIndexLocation":
                         appIndexLocation = value;
                         break;
-                        
+
+                    case "DbPath":
+                        appIndexLocation = value;
+                        break;
+
                     case "animationFrameRate":
                         if (int.TryParse(value, out var result))
                             animationFrameRate = result;

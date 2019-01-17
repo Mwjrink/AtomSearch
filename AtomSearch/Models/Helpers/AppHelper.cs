@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -44,9 +45,12 @@ namespace AtomSearch
         public static IEnumerable<Result> GetResults(string provided)
         {
             foreach (var installed in InstalledApps)
-                installed.SetMatchRank(1300 - 1300*(StringDifferenceHelper.LevenshteinDistance(installed.DisplayText, provided) / installed.DisplayText.Length));
+            {
+                var sDiff = StringDifferenceHelper.LevenshteinDistance(installed.DisplayText, provided);
+                installed.MatchRankStringDifference = (double)4000 - (double)sDiff / (double)installed.DisplayText.Length * (double)4000;
+            }
 
-            return InstalledApps.OrderBy(x => x.MatchRank);
+            return InstalledApps.OrderByDescending(x => x.MatchRank);
         }
 
         //TEMPORARY

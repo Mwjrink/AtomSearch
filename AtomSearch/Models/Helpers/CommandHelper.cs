@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace AtomSearch
 {
@@ -25,7 +26,7 @@ namespace AtomSearch
         {
             if (flagsDict == null)
                 flagsDict = new Dictionary<string, Dictionary<string, Flag>>();
-            
+
             if (!flagsDict.ContainsKey(command.command))
             {
                 flagsDict[command.command] = new Dictionary<string, Flag>();
@@ -101,22 +102,14 @@ namespace AtomSearch
             if (command.resultsHTTPRequestFormat != null)
             {
                 foreach (var non in provided.Where(c => !(char.IsLetterOrDigit(c) || char.IsWhiteSpace(c) || c == '-')).ToArray())
-                    provided = provided.Replace("" + non, 
+                    provided = provided.Replace("" + non,
                         command.nonAlphaNumericCharacterEncodingFormat.Replace(UNICODE_PARAMETER_NAME, ((int)non).ToString("X")));
 
                 var httpResult = HttpHelper.RequestString(command.resultsHTTPRequestFormat.Replace(COMMAND_PARAMETER_NAME, provided));
 
-                var obj = JsonConvert.DeserializeObject<object[]>(httpResult);
+                //var obj = JsonConvert.DeserializeObject<object[]>(httpResult);
 
-                var resultsScoreArray = (JContainer)obj[command.resultsScoreArrayIndex];
-
-                var relevances = resultsScoreArray.First.Next.Value<int[]>();
-
-                var normalization = resultsScoreArray.Last.Value<int>();
-
-                var resultsArray = (JArray)obj[command.resultsArrayIndex];
-
-                results.AddRange(resultsArray.ToObject<string[]>().Select(x => new Result(x, command.image)));
+                CreateResults(command, results, httpResult);
             }
             else if (command.resultsProcessInvokeFileName != null)
             {
@@ -132,15 +125,29 @@ namespace AtomSearch
                     RedirectStandardOutput = true,
                     UseShellExecute = false
                 }).StandardOutput.ReadToEnd();
-
-                var obj = JsonConvert.DeserializeObject<object[]>(processResult);
-
-                var resultsArray = (JArray)obj[command.resultsArrayIndex];
-
-                results.AddRange(resultsArray.ToObject<string[]>().Select(x => new Result(x, command.image)));
+                
+                CreateResults(command, results, processResult);
             }
 
             return results;
+        }
+
+        private static void CreateResults(Command command, List<Result> results, string httpResult)
+        {
+            var ra = new Regex(command.resultsArrayRegex);
+            var rs = new Regex(command.resultsScoreArrayRegex);
+            var rn = new Regex(command.resultNormalizationRegex);
+
+            var m1 = rs.Match(httpResult);
+            var resultsScoreArray = m1.Groups["arr"].Value.Replace("\"", "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToArray();
+
+            var m2 = rn.Match(httpResult);
+            var normalization = int.Parse(m2.Groups["norm"].Value.Replace("\"", ""));
+
+            var m3 = ra.Match(httpResult);
+            var resultsArray = m3.Groups["arr"].Value.Replace("\"", "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            results.AddRange(Enumerable.Range(0, resultsArray.Length).Select(i => new Result(resultsArray[i], command.image, matchRank: resultsScoreArray[i], normalization: normalization)));
         }
 
         #endregion Methods
