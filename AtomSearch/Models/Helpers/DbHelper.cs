@@ -62,10 +62,10 @@ namespace AtomSearch
             }
         }
 
-        public static IEnumerable<IDataRecord> Enumerate(this IDataReader reader)
-        {
-            while (reader.Read())
-                yield return reader;
-        }
+        //public static IEnumerable<IDataRecord> Enumerate(this IDataReader reader)
+        //{
+        //    while (reader.Read())
+        //        yield return reader;
+        //}
     }
 }

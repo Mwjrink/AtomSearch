@@ -278,10 +278,10 @@ namespace AtomSearch
             var computed = currentCommand.GetResults(AtomSearchContent);
             Results.Clear();
 
-            foreach(var row in DbHelper.GetCommandUsages("SELECT * FROM main WHERE CommandText").Enumerate())
-            {
+            //foreach(var row in DbHelper.GetCommandUsages("SELECT * FROM main WHERE CommandText").Enumerate())
+            //{
 
-            }
+            //}
                 
             foreach (var res in computed)
                 Results.Add(res);
