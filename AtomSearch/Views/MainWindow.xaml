@@ -32,7 +32,7 @@
         RenderTransformOrigin="0.5, 0.5">
 
     <Window.Resources>
-        <sys:Double x:Key="AnimationScaleTargetValue">0.8</sys:Double>
+        <sys:Double x:Key="AnimationScaleTargetValue">1.0</sys:Double>
 
         <!--<sys:Int32 x:Key="AnimationTargetFramerate">60</sys:Int32>-->
 
@@ -42,8 +42,8 @@
             <DoubleAnimation Storyboard.TargetName="AtomSearchBorderScaleTransform"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              From="{StaticResource AnimationScaleTargetValue}" To="1.0" Duration="{StaticResource AnimationDurationValue}"
-                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"
-                             AccelerationRatio="0.1">
+                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}">
+                <!--AccelerationRatio="0.1">-->
                 <!--<DoubleAnimation.EasingFunction>
                     <QuadraticEase EasingMode="EaseIn" />
                 </DoubleAnimation.EasingFunction>-->
@@ -52,22 +52,22 @@
             <DoubleAnimation Storyboard.TargetName="AtomSearchBorderScaleTransform"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              From="{StaticResource AnimationScaleTargetValue}" To="1.0" Duration="{StaticResource AnimationDurationValue}"
-                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"
-                             AccelerationRatio="0.1" />
+                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"></DoubleAnimation>
+            <!--AccelerationRatio="0.1" />-->
         </Storyboard>
 
         <Storyboard x:Name="ZoomOutStoryBoard" x:Key="ZoomOutStoryBoard">
             <DoubleAnimation Storyboard.TargetName="AtomSearchBorderScaleTransform"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
                              From="1.0" To="{StaticResource AnimationScaleTargetValue}" Duration="{StaticResource AnimationDurationValue}"
-                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"
-                             AccelerationRatio="0.1" />
+                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"></DoubleAnimation>
+            <!--AccelerationRatio="0.1" />-->
 
             <DoubleAnimation Storyboard.TargetName="AtomSearchBorderScaleTransform"
                              Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
                              From="1.0" To="{StaticResource AnimationScaleTargetValue}" Duration="{StaticResource AnimationDurationValue}"
-                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"
-                             AccelerationRatio="0.1" />
+                             Timeline.DesiredFrameRate="{StaticResource AnimationTargetFramerate}"></DoubleAnimation>
+            <!--AccelerationRatio="0.1" />-->
         </Storyboard>
 
         <local:EqualityConverter x:Key="equalityConverter" />
@@ -169,6 +169,11 @@
         </Style>
     </Window.Resources>
 
+    <Window.Effect>
+        <DropShadowEffect BlurRadius="8" Direction="-90" 
+                          RenderingBias="Quality" ShadowDepth="3" />
+    </Window.Effect>
+
     <Window.RenderTransform>
         <ScaleTransform x:Name="AtomSearchBorderScaleTransform"
                                 ScaleX="1" ScaleY="1" />
@@ -214,11 +219,11 @@
                 <Image Grid.Column="0"
                        Source="{Binding CurrentModeIconPath}"
                        VerticalAlignment="Center"
-                       Margin="20,20,10,20"
+                       Margin="12,12,12,12"
                        RenderOptions.BitmapScalingMode="Fant"
                        Stretch="Fill"
-                       Width="64"
-                       Height="64"/>
+                       Width="32"
+                       Height="32"/>
 
                 <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" x:Name="AtomSearch"
                          Focusable="True"
@@ -229,10 +234,12 @@
                          MaxLines="1"
                          TextAlignment="Left"
                          VerticalContentAlignment="Center"
+                         VerticalAlignment="Center"
                          FontFamily="{Binding AtomSearchFontFamily}"
                          CaretBrush="{Binding AtomSearchCaretBrush}"
                          BorderThickness="0"
-                         Margin="10,20,0,20" />
+                         />
+                <!--Margin="10,20,0,20"-->
 
                 <TextBlock Grid.Column="1" Grid.Row="0"
                            Focusable="True"
@@ -241,9 +248,10 @@
                            Background="Transparent"
                            Foreground="{Binding AtomSearchForegroundBrush}"
                            TextAlignment="Left"
+                           VerticalAlignment="Center"
                            FontFamily="{Binding AtomSearchFontFamily}"
-                           Margin="20,20,0,20"
                            Visibility="{Binding WatermarkVisibility}" />
+                <!--Margin="20,20,0,20"-->
 
                 <TextBlock Grid.Column="2"
                            Text="{Binding ModeText}"
@@ -254,7 +262,8 @@
                            Foreground="{Binding AtomSearchForegroundBrush}"
                            FontFamily="{Binding AtomSearchFontFamily}"
                            Background="Transparent"
-                           Margin="0,20,20,20" />
+                           Margin="0,0,16,0"
+                           />
             </Grid>
         </Border>
 

@@ -62,7 +62,7 @@ namespace AtomSearch
         // WINDOW SIZE
         public static double WindowWidth => SystemParameters.PrimaryScreenWidth * 0.4;
 
-        public static double WindowHeight => SystemParameters.PrimaryScreenHeight * 0.075;
+        public static double WindowHeight => SystemParameters.PrimaryScreenHeight * 0.05;
 
         // WINDOW POSITION
         public static double WindowXPosition => (SystemParameters.PrimaryScreenWidth - WindowWidth) / 2;
@@ -70,7 +70,8 @@ namespace AtomSearch
         public static double WindowYPosition => (SystemParameters.PrimaryScreenHeight * 0.2) - (WindowHeight / 2);
 
         // WINDOW COLORS
-        public SolidColorBrush BackgroundBrush { get; private set; } = new SolidColorBrush(Color.FromArgb(200, 200, 200, 200));
+        //public SolidColorBrush BackgroundBrush { get; private set; } = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
+        public SolidColorBrush BackgroundBrush { get; private set; } = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
 
         public SolidColorBrush BorderBrush { get; private set; }
 
@@ -78,11 +79,11 @@ namespace AtomSearch
         public SolidColorBrush AtomSearchForegroundBrush { get; private set; } = new SolidColorBrush(Color.FromArgb(250, 100, 100, 100));
 
         // WINDOW BORDER
-        public CornerRadius CornerRadius { get; private set; } = new CornerRadius(10);
+        public CornerRadius CornerRadius { get; private set; } = new CornerRadius(6);
 
-        public Thickness BorderThickness { get; private set; } = new Thickness(5);
+        public Thickness BorderThickness { get; private set; } = new Thickness(2);
 
-        public Thickness AtomSearchPadding { get; private set; } = new Thickness(5);
+        public Thickness AtomSearchPadding { get; private set; } = new Thickness(4);
 
         // SEARCH BAR TEXT STYLE
         public double AtomSearchFontSize { get; private set; }
@@ -112,6 +113,8 @@ namespace AtomSearch
 
         // SEARCH
         private HotKey ActivationHotKey { get; set; }
+
+        private int MaxResults = 20;
 
         public string AtomSearchContent
         {
@@ -231,7 +234,13 @@ namespace AtomSearch
         {
             SetMode();
 
-            GetResults();
+            if (string.IsNullOrWhiteSpace(AtomSearchContent))
+            {
+                Results.Clear();
+                RequestChangeResultsVisibility(false);
+            }
+            else
+                GetResults();
 
             SelectedIndex = -1;
             OnPropertyChanged(nameof(SelectedIndex));
@@ -265,7 +274,7 @@ namespace AtomSearch
             foreach (var command in commands.Where(c => c.Key != currentCommand.command))
                 resultList.AddRange(command.Value.GetResults(provided));
 
-            var ret = resultList.OrderByDescending(result => result.MatchRank);
+            var ret = resultList.OrderByDescending(result => result.MatchRank).Take(MaxResults);
 
             foreach (var command in ret)
                 Debug.Print(command.DisplayText + " " + command.MatchRank);
@@ -282,7 +291,7 @@ namespace AtomSearch
             //{
 
             //}
-                
+
             foreach (var res in computed)
                 Results.Add(res);
 
@@ -344,6 +353,11 @@ namespace AtomSearch
         //         use construct
         private bool ExecuteCommand(Result selected = null)
         {
+            if (string.IsNullOrWhiteSpace(AtomSearchContent))
+                return true;
+
+            // TODO add AtomSearchContent to the db with date (or increment usage)
+
             if (AtomSearchContent.StartsWith(SettingsHelper.fileSearchPrefix))
             {
                 try
@@ -442,9 +456,42 @@ namespace AtomSearch
 
                 return false;
             }
-            else if (commands.TryGetValue(AtomSearchContent.Split(new[] { ' ' }, 2)[0], out var command)
-                || commands.TryGetValue(SettingsHelper.defaultCommandPrefix, out command))
+            else if (commands.TryGetValue(AtomSearchContent.Split(new[] { ' ' }, 2)[0], out var command))
             {
+                (var filePath, var arguments) = command.GetCommand(selected, AtomSearchContent);
+
+                //DbHelper.RecordCommandUse(command, overrideContent ?? AtomSearchContent, AtomSearchContent);
+                //#if DEBUG
+                //                var error =
+                //#endif
+                Process.Start(new ProcessStartInfo()
+                {
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    FileName = filePath,
+                    Arguments = arguments
+
+                    //#if DEBUG
+                    //                    ,
+                    //                        RedirectStandardOutput = true,
+                    //                        UseShellExecute = false
+                    //#endif
+                })
+                //#if DEBUG
+                //                    .StandardOutput.ReadToEnd()
+                //#endif
+                ;
+                //#if DEBUG
+                //                Debug.Print("Command execute output: " + error);
+                //#endif
+            }
+            else if (selected != null)
+            {
+
+            }
+            else
+            {
+                commands.TryGetValue(SettingsHelper.defaultCommandPrefix, out command);
+
                 (var filePath, var arguments) = command.GetCommand(selected, AtomSearchContent);
 
                 //DbHelper.RecordCommandUse(command, overrideContent ?? AtomSearchContent, AtomSearchContent);

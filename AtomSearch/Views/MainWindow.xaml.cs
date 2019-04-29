@@ -30,6 +30,8 @@ namespace AtomSearch
         {
             //SourceInitialized += MainWindow_SourceInitialized;
 
+            App.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
             // ANIMATION REQUESTS
             MainWindowVM.RequestActivateEvent += async () => await ActivateAndFocus().ConfigureAwait(false);
             MainWindowVM.RequestMinimizeEvent += async () => await DeActivate(true).ConfigureAwait(false);
@@ -62,8 +64,13 @@ namespace AtomSearch
             ResultsBorder.Visibility = Visibility.Hidden;
             ResultsBlurEffectBorder.Visibility = Visibility.Hidden;
 
-            AtomSearchBorderScaleTransform.ScaleX = 0.8;
-            AtomSearchBorderScaleTransform.ScaleY = 0.8;
+            //AtomSearchBorderScaleTransform.ScaleX = 0.8;
+            //AtomSearchBorderScaleTransform.ScaleY = 0.8;
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Debug.Print("Unhandled exception: " + e.ToString());
         }
 
         public void ResetAnimationFrameRate(int value)
@@ -76,7 +83,7 @@ namespace AtomSearch
             WindowState = WindowState.Normal;
             Activate();
             Show();
-            await ((Storyboard)Resources["ZoomInStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
+            //await ((Storyboard)Resources["ZoomInStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
             AtomSearch.Focus();
         }
 
@@ -92,7 +99,7 @@ namespace AtomSearch
         {
             if (!IsKeyboardFocusWithin || force)
             {
-                await ((Storyboard)Resources["ZoomOutStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
+                //await ((Storyboard)Resources["ZoomOutStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
 
                 Hide();
             }
@@ -117,7 +124,14 @@ namespace AtomSearch
                 e.Handled = true;
             }
 
-            ResultsView.ScrollIntoView(ResultsView.SelectedItem);
+            try
+            {
+                ResultsView.ScrollIntoView(ResultsView.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                Debug.Print("Error scrolling selected with down arrow into view" + ex.Message);
+            }
         }
 
         private async Task ChangeResultsVisibility(bool value)
@@ -128,7 +142,7 @@ namespace AtomSearch
                 {
                     ResultsBlurEffectBorder.Visibility = Visibility.Visible;
                     ResultsBorder.Visibility = Visibility.Visible;
-                    await ((Storyboard)ResultsBorder.Resources["ZoomInStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
+                    //await ((Storyboard)ResultsBorder.Resources["ZoomInStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
                 }
             }
             else
@@ -136,13 +150,13 @@ namespace AtomSearch
                 if (ResultsBorder.Visibility == Visibility.Visible)
                 {
                     ResultsBlurEffectBorder.Visibility = Visibility.Hidden;
-                    await ((Storyboard)ResultsBorder.Resources["ZoomOutStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
+                    //await ((Storyboard)ResultsBorder.Resources["ZoomOutStoryBoard"]).BeginAsync(this).ConfigureAwait(true);
                     ResultsBorder.Visibility = Visibility.Hidden;
                 }
             }
         }
 
-        private void Result_MouseDown(object sender, MouseButtonEventArgs e) 
+        private void Result_MouseDown(object sender, MouseButtonEventArgs e)
             => ResultClickedEvent?.Invoke((Result)((Grid)sender).DataContext);
 
         //private void MainWindow_SourceInitialized(object sender, EventArgs e)

@@ -39,6 +39,9 @@ namespace AtomSearch
         // validateCommandJson "@path" to validate your JSon command, (no double asterisks, no double commands ("i " specifiec twice) etc.)
         public static (string filePath, string arguments) GetCommand(this Command command, Result selected, string provided)
         {
+            if (string.IsNullOrEmpty(provided))
+                return (null, null);
+
             EnsureFlagsDict(command);
 
             string constructed = command.commandFormat;
@@ -125,7 +128,7 @@ namespace AtomSearch
                     RedirectStandardOutput = true,
                     UseShellExecute = false
                 }).StandardOutput.ReadToEnd();
-                
+
                 CreateResults(command, results, processResult);
             }
 
